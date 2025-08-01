@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import HeaderRouter from "./ui/Header/HeaderRouter";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({
   subsets: ["greek"],
@@ -23,6 +25,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-[#FAFAFA] `}>
         <HeaderRouter />
         {children}
+        <ToastContainer position="top-right" autoClose={3000} />
       </body>
     </html>
   );

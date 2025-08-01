@@ -17,11 +17,11 @@ const VacansyCards = () => {
     <div className="w-full items-center border border-gray-100 justify-center pl-[140px] pr-[140px]">
       <div className="w-full max-h-fit rounded-t-[22px] border border-gray-100  flex flex-col bg-white mt-10">
         <div className="w-full flex flex-row justify-between items-center p-3">
-          <div className="w-[80px] rounded-full bg-purple-200 flex flex-row">
+          <div className="w-[80px] rounded-full bg-purple-100 flex flex-row">
             <button
               onClick={() => setActiveView("vertical")}
               className={`w-[40px] h-[40px] rounded-full flex items-center cursor-pointer justify-center
-              ${activeView === "vertical" ? "bg-[#a155b9]" : "bg-purple-200"}`}
+              ${activeView === "vertical" ? "bg-[#c886dc]" : "bg-purple-100"}`}
             >
               <Image src={Square} alt="vertical" width={20} height={20} />
             </button>
@@ -30,7 +30,7 @@ const VacansyCards = () => {
               onClick={() => setActiveView("horizontal")}
               className={`w-[40px] h-[40px] rounded-full flex items-center cursor-pointer justify-center
               ${
-                activeView === "horizontal" ? "bg-[#a155b9]" : "bg-purple-200"
+                activeView === "horizontal" ? "bg-[#c886dc]" : "bg-purple-100"
               }`}
             >
               <Image src={Squares} alt="horizontal" width={18} height={18} />

@@ -16,27 +16,79 @@ interface Type {
   _id: string;
 }
 
-const VacansyHorisontal = () => {
+interface FilterProps {
+  search?: string;
+  location?: string;
+  workType?: string;
+  experience?: string;
+  language?: string;
+  category?: string;
+}
+
+const VacansyHorisontal = ({ filters }: { filters: FilterProps }) => {
   const [vacancies, setVacancies] = useState<Type[]>([]);
   const token = getCookie("token");
 
   useEffect(() => {
     const fetchVacancies = async () => {
       try {
+        const params: any = {};
+        if (filters.location) params.location = filters.location;
+        if (filters.category) params.jobCategory = filters.category;
+        if (filters.workType) params.workType = filters.workType;
+
         const response = await axios.get("http://localhost:3001/jobs", {
           headers: { Authorization: `Bearer ${token}` },
+          params,
         });
-        const filteredVacancies = response.data.map((vacancy: any) => ({
-          title: vacancy.title,
-          companyName: vacancy.companyName,
-          salaryRange: vacancy.salaryRange,
-          createdAt: new Date(vacancy.createdAt).toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          }),
-          _id: vacancy._id,
-        }));
+
+        const filteredVacancies = response.data
+          .filter((vacancy: any) => {
+            // გამოცდილება
+            if (
+              filters.experience &&
+              vacancy.experience !== filters.experience
+            ) {
+              return false;
+            }
+
+            // ენა
+            if (
+              filters.language &&
+              !vacancy.languages?.includes(filters.language)
+            ) {
+              return false;
+            }
+
+            // საძიებო სიტყვა title და companyName-ში
+            if (
+              filters.search &&
+              !(
+                vacancy.title
+                  .toLowerCase()
+                  .includes(filters.search.toLowerCase()) ||
+                vacancy.companyName
+                  .toLowerCase()
+                  .includes(filters.search.toLowerCase())
+              )
+            ) {
+              return false;
+            }
+
+            return true;
+          })
+          .map((vacancy: any) => ({
+            title: vacancy.title,
+            companyName: vacancy.companyName,
+            salaryRange: vacancy.salaryRange,
+            createdAt: new Date(vacancy.createdAt).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            }),
+            _id: vacancy._id,
+          }));
+
         setVacancies(filteredVacancies);
       } catch (err) {
         console.error("Error fetching vacancies:", err);
@@ -44,7 +96,7 @@ const VacansyHorisontal = () => {
     };
 
     fetchVacancies();
-  }, [token]);
+  }, [token, filters]);
 
   return (
     <div className="w-[100%] h-fit p-[30px] flex flex-wrap gap-[20px] border-gray-100 border">

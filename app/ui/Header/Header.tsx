@@ -7,6 +7,7 @@ import CompanyHeader from "./CompanyHeader";
 import OutOfAuth from "./OutOfAuth";
 import AdminHeader from "./AdminHeader";
 import { getRoleFromToken } from "@/app/store";
+import ProfileButton from "./ProfileButton";
 
 const Header = () => {
   const [role, setRole] = useState("unauthenticated");
@@ -17,7 +18,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="w-[100%] h-[80px] flex fixed pl-[140px] pr-[140px] mt-0 flex-row items-center justify-between bg-white shadow-2xs">
+    <div className="w-[100%] h-[80px] flex fixed pl-[140px] pr-[140px] mt-0 flex-row items-center justify-between bg-white shadow-md z-30 ">
       <div className="w-[100%] flex flex-row items-center gap-8">
         <Logo />
         <Link href={"/vacancy"} className="hover:text-gray-500">
@@ -40,7 +41,8 @@ const Header = () => {
       <div className="w-[30%] flex items-center gap-2 flex-row justify-end">
         {role === "user" && <UserHeader />}
         {role === "admin" && <AdminHeader />}
-        {role === "company" && <CompanyHeader />}
+        <CompanyHeader />
+        {role === "company" && <ProfileButton />}
         {role === "unauthenticated" && <OutOfAuth />}
       </div>
     </div>

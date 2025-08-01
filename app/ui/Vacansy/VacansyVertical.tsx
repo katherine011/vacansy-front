@@ -22,9 +22,72 @@ interface Type {
   experience?: string;
 }
 
-const VacansyVertical = () => {
+type Filters = {
+  search: string;
+  location: string;
+  jobCategory: string;
+  workType: string;
+  language: string;
+  experience: string;
+};
+
+const VacansyVertical = ({ filters }: { filters: Filters }) => {
   const [vacancies, setVacancies] = useState<Type[]>([]);
   const token = getCookie("token");
+
+  useEffect(() => {
+    const fetchVacancies = async () => {
+      try {
+        const response = await axios.get("http://localhost:3001/jobs", {
+          headers: { Authorization: `Bearer ${token}` },
+          params: {
+            location: filters.location || undefined,
+            jobCategory: filters.jobCategory || undefined,
+            workType: filters.workType || undefined,
+            // დამატებით შეგიძლია სხვა ფილტრებიც გააგზავნო
+          },
+        });
+
+        let filtered = response.data;
+
+        // Frontend filtering (optional)
+        if (filters.search) {
+          filtered = filtered.filter((v: any) =>
+            v.title.toLowerCase().includes(filters.search.toLowerCase())
+          );
+        }
+
+        if (filters.language) {
+          filtered = filtered.filter((v: any) =>
+            v.languages?.includes(filters.language)
+          );
+        }
+
+        if (filters.experience) {
+          filtered = filtered.filter(
+            (v: any) => v.experience === filters.experience
+          );
+        }
+
+        const mapped = filtered.map((vacancy: any) => ({
+          title: vacancy.title,
+          companyName: vacancy.companyName,
+          salaryRange: vacancy.salaryRange,
+          createdAt: new Date(vacancy.createdAt).toLocaleDateString("en-GB"),
+          _id: vacancy._id,
+          location: vacancy.location,
+          workType: vacancy.workType,
+          experience: vacancy.experience,
+        }));
+
+        setVacancies(mapped);
+      } catch (err) {
+        console.error("Error fetching vacancies:", err);
+      }
+    };
+
+    fetchVacancies();
+  }, [filters, token]);
 
   useEffect(() => {
     const fetchVacancies = async () => {

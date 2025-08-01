@@ -3,13 +3,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-.hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
+/* globals.css */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE და Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 @theme inline {

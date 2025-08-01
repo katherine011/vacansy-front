@@ -15,7 +15,7 @@ const CompanySearch = () => {
         />
         <input
           type="text"
-          placeholder="ვაკანსიის დასახელება"
+          placeholder="კომპანიის დასახელება"
           className="border-none outline-none w-[100%] "
         />
       </div>

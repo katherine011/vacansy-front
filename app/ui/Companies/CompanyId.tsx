@@ -21,7 +21,6 @@ interface VacancyType {
 
 const CompanyId = () => {
   const params = useParams();
-  // params არის Record<string, string | string[]>
   const id = params?.id as string;
   const [vacancy, setVacancy] = useState<VacancyType | null>(null);
 

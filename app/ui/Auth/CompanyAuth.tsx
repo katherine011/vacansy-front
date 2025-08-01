@@ -6,9 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { setCookie, getCookie } from "cookies-next";
+import { setCookie } from "cookies-next";
 
-// ✅ Yup validation schema
 const schema = yup.object().shape({
   registrantName: yup.string().required("სახელი აუცილებელია"),
   registrantSurname: yup.string().required("გვარი აუცილებელია"),
@@ -18,13 +17,11 @@ const schema = yup.object().shape({
     .string()
     .min(6, "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს")
     .required("პაროლი აუცილებელია"),
-  confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password")], "პაროლები არ ემთხვევა")
-    .required("გაიმეორეთ პაროლი"),
   phone: yup.string().required("ტელეფონის ნომერი აუცილებელია"),
   description: yup.string().required("კომპანიის შესახებ აუცილებელია"),
 });
+
+type FormValues = yup.InferType<typeof schema>;
 
 const CompanyAuth = () => {
   const router = useRouter();
@@ -33,11 +30,10 @@ const CompanyAuth = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+  } = useForm<FormValues>({ resolver: yupResolver(schema) });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormValues) => {
     try {
-      console.log(data, "data");
       const response = await axios.post(
         "http://localhost:3001/auth/register/company",
         data
@@ -45,14 +41,20 @@ const CompanyAuth = () => {
 
       const token = response.data.token;
       if (token) {
-        console.log(token, "token");
         setCookie("token", token);
         router.push("/");
       } else {
         console.error("Token not returned from backend");
       }
-    } catch (err: any) {
-      console.error("Registration failed:", err.response?.data || err.message);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        console.error(
+          "Registration failed:",
+          err.response?.data || err.message
+        );
+      } else {
+        console.error("Unexpected error:", err);
+      }
     }
   };
 
@@ -61,6 +63,7 @@ const CompanyAuth = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="w-full flex flex-col items-center gap-4"
     >
+      {/* Name & Surname */}
       <div className="flex flex-row items-center gap-3 w-full">
         <div className="w-full">
           <input
@@ -94,6 +97,7 @@ const CompanyAuth = () => {
         </div>
       </div>
 
+      {/* Company Name */}
       <div className="w-full">
         <input
           type="text"
@@ -110,6 +114,7 @@ const CompanyAuth = () => {
         )}
       </div>
 
+      {/* Email */}
       <div className="w-full">
         <input
           type="email"
@@ -124,6 +129,7 @@ const CompanyAuth = () => {
         )}
       </div>
 
+      {/* Password */}
       <div className="w-full">
         <input
           type="password"
@@ -138,22 +144,7 @@ const CompanyAuth = () => {
         )}
       </div>
 
-      <div className="w-full">
-        <input
-          type="password"
-          placeholder="გაიმეორეთ პაროლი"
-          {...register("confirmPassword")}
-          className={`w-full border rounded-[10px] p-2 h-[40px] ${
-            errors.confirmPassword ? "border-red-500" : "border-gray-200"
-          }`}
-        />
-        {errors.confirmPassword && (
-          <p className="text-red-500 text-sm mt-1">
-            {errors.confirmPassword.message}
-          </p>
-        )}
-      </div>
-
+      {/* Phone */}
       <div className="w-full">
         <input
           type="text"
@@ -168,6 +159,7 @@ const CompanyAuth = () => {
         )}
       </div>
 
+      {/* Description */}
       <div className="w-full">
         <textarea
           placeholder="კომპანიის შესახებ"
@@ -183,6 +175,7 @@ const CompanyAuth = () => {
         )}
       </div>
 
+      {/* Submit Button */}
       <button
         type="submit"
         className="w-full h-[50px] rounded-[10px] flex items-center justify-center text-white font-semibold text-2xl hover:bg-purple-300 cursor-pointer bg-[#a155b9]"

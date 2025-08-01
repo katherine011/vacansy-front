@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { z } from "zod";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -36,7 +35,7 @@ export default function JobModalWrapper({
 
   const onSubmit = async (data: JobSchemaType) => {
     try {
-      const res = await axios.put(`/api/jobs/${job._id}`, data, {
+      const res = await axios.put(`/jobs/${job._id}`, data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -56,7 +55,7 @@ export default function JobModalWrapper({
   };
 
   if (job.status === "approved") {
-    return null; // ვაკანსია დადასტურებულია => არ აჩვენო მოდალი
+    return null;
   }
 
   return (
@@ -95,8 +94,6 @@ export default function JobModalWrapper({
               </p>
             )}
           </div>
-
-          {/* სხვა ველები აქ შეგიძლიათ დაამატოთ იგივე სტილში */}
 
           <div className="flex justify-end gap-2 mt-6">
             <button type="button" onClick={onClose} className="btn btn-outline">

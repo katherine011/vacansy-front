@@ -1,6 +1,5 @@
 "use client";
 
-// import { Button } from "@/components/ui/button";
 import { getCookie } from "cookies-next";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,7 +23,7 @@ const schema = yup.object().shape({
 export default function Login() {
   const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // ლოდინგი სანამ ვამოწმებთ ტოკენს
+  const [loading, setLoading] = useState(true);
 
   const {
     register,
@@ -34,13 +33,12 @@ export default function Login() {
     resolver: yupResolver(schema),
   });
 
-  // ✅ უკვე შესული მომხმარებლის გადამისამართება
   useEffect(() => {
     const token = getCookie("token");
     if (token) {
-      router.push("/"); // თუ უკვე აქვს ტოკენი, გადაამისამართე
+      router.push("/");
     } else {
-      setLoading(false); // არ არის ტოკენი? აჩვენე ფორმა
+      setLoading(false);
     }
   }, [router]);
 
@@ -61,10 +59,9 @@ export default function Login() {
 
       console.log("Logged in with role:", role);
 
-      // router.push უკვე მაშინ როცა ყველაფერი მზადაა
       setTimeout(() => {
         router.push("/");
-      }, 100); // ოდნავ მეტი დაყოვნება უკეთესია რეაქტისთვის
+      }, 100);
     } catch (err: any) {
       console.error("Login error:", err.response?.data || err.message);
       setApiError(err.response?.data?.message || "შესვლა ვერ მოხერხდა");
@@ -75,7 +72,7 @@ export default function Login() {
     handleSubmit(onSubmit)(e);
   };
 
-  if (loading) return null; // ან <div>იტვირთება...</div>
+  if (loading) return null;
 
   return (
     <div className="w-[100%] h-[100vh] flex items-center justify-center ">

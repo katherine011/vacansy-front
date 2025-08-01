@@ -41,7 +41,6 @@ const Vacansy = () => {
     experience: "",
   });
 
-  // ამოიღე query-დან პარამეტრები და ჩასვი სტეიტში
   useEffect(() => {
     const params = {
       search: searchParams.get("search") || "",
@@ -55,7 +54,6 @@ const Vacansy = () => {
     setFilters(params);
   }, [searchParams]);
 
-  // ეს ქმნის query-param-ებს და როუტავს
   const updateURLWithFilters = (updatedFilters: typeof filters) => {
     const query = new URLSearchParams();
     Object.entries(updatedFilters).forEach(([key, value]) => {
@@ -65,12 +63,10 @@ const Vacansy = () => {
     router.push(`/vacancy?${query.toString()}`);
   };
 
-  // საძიებო ღილაკზე დაჭერისას
   const handleSearch = () => {
     updateURLWithFilters(filters);
   };
 
-  // გასუფთავების ღილაკი
   const clearFilters = () => {
     setFilters({
       search: "",

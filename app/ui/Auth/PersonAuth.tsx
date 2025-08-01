@@ -8,7 +8,6 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
 
-// Yup validation schema
 const schema = yup.object().shape({
   name: yup.string().required("სახელი აუცილებელია"),
   surname: yup.string().required("გვარი აუცილებელია"),
@@ -66,8 +65,12 @@ const PersonAuth = () => {
         throw new Error("ტოკენი არ დაბრუნდა სერვერიდან");
       }
     } catch (err: any) {
-      console.error("რეგისტრაცია ჩაიშალა:", err.response?.data || err.message);
-      alert(err.response?.data?.message || "რეგისტრაცია ჩაიშალა");
+      console.error("რეგისტრაცია ჩაიშალა:", err);
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.message || "სერვერის შეცდომა");
+      } else {
+        alert("უცნობი შეცდომა მოხდა");
+      }
     }
   };
 

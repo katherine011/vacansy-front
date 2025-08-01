@@ -12,32 +12,14 @@ import Clock from "../../../icons/clock (1).png";
 import Cap from "../../../icons/graduation-cap.png";
 import IDk from "../../../icons/language.png";
 import { getCookie } from "cookies-next";
-import { DialogTitle } from "@/components/ui/dialog"; // აუცილებლად დაამატე ეს
-
-import { Button } from "@/app/ui/rare/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { DialogTitle } from "@/components/ui/dialog";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ModalForId from "./ModalForId";
 import JobModalWrapper from "./JobModalWrapper";
+import { JobSchemaType } from "@/lib/validation/job-schema";
 
-interface VacancyType {
-  title: string;
+interface VacancyType extends JobSchemaType {
   companyName: string;
-  location: string;
-  salaryRange: string;
-  workType: string;
-  experience: string;
-  description: string;
   customId: string;
   id: string;
 }
@@ -78,25 +60,33 @@ const MyVacansyDetails = () => {
             </div>
           </div>
           <div className="w-[100%] flex flex-row items-center justify-end gap-3 ">
-            <Sheet open={open} onOpenChange={setOpen}>
-              {" "}
-              <DialogTitle></DialogTitle>
-              <SheetTrigger asChild>
-                <button className="w-[140px] h-[40px] border border-gray-400 cursor-pointer flex items-center justify-center font-semibold rounded-[10px]">
-                  განახლება
-                </button>
-              </SheetTrigger>
-              <SheetContent className="w-[1200px]">
-                <JobModalWrapper />
-              </SheetContent>
-            </Sheet>
+            {vacancy?.status === "approved" && (
+              <Sheet open={open} onOpenChange={setOpen}>
+                <DialogTitle></DialogTitle>
+                <SheetTrigger asChild>
+                  <button className="w-[140px] h-[40px] border border-gray-400 cursor-pointer flex items-center justify-center font-semibold rounded-[10px]">
+                    განახლება
+                  </button>
+                </SheetTrigger>
+                <SheetContent className="w-[1200px]">
+                  <JobModalWrapper
+                    job={vacancy!}
+                    onClose={() => setOpen(false)}
+                    onSuccess={() => setOpen(false)}
+                  />
+                </SheetContent>
+              </Sheet>
+            )}
 
-            <button className="w-[180px] h-[40px] bg-green-700 cursor-pointer text-white flex items-center justify-center font-semibold rounded-[10px]">
-              დადასტურებული
-            </button>
-            {/* <button className="w-[150px] h-[40px] bg-red-700 cursor-pointer text-white flex items-center justify-center font-semibold rounded-[10px]">
+            {vacancy?.status === "approved" ? (
+              <button className="w-[180px] h-[40px] bg-green-700 cursor-default text-white flex items-center justify-center font-semibold rounded-[10px]">
+                დადასტურებული
+              </button>
+            ) : (
+              <button className="w-[180px] h-[40px] bg-red-700 cursor-default text-white flex items-center justify-center font-semibold rounded-[10px]">
                 მოლოდინშია
-                </button> */}
+              </button>
+            )}
           </div>
         </div>
 

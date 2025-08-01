@@ -41,8 +41,9 @@ const Header = () => {
       <div className="w-[30%] flex items-center gap-2 flex-row justify-end">
         {role === "user" && <UserHeader />}
         {role === "admin" && <AdminHeader />}
-        <CompanyHeader />
+        {role === "company" && <CompanyHeader />}
         {role === "company" && <ProfileButton />}
+        {role === "unauthenticated" && <CompanyHeader />}
         {role === "unauthenticated" && <OutOfAuth />}
       </div>
     </div>

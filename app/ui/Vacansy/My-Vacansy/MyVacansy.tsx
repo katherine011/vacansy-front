@@ -10,7 +10,6 @@ import Default from "../../../images/images.jpg";
 import Location from "../../../icons/location (2).png";
 import Clock from "../../../icons/clock.png";
 import Cap from "../../../icons/graduation-cap.png";
-import Wallet from "../../../icons/wallet.png";
 
 interface Type {
   title: string;

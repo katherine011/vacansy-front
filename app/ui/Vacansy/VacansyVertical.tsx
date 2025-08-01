@@ -17,7 +17,7 @@ interface Type {
   salaryRange: string;
   createdAt: string;
   _id: string;
-  location?: string; // Optional fields based on the original component
+  location?: string;
   workType?: string;
   experience?: string;
 }

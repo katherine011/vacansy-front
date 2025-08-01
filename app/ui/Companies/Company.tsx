@@ -132,7 +132,7 @@ const Company = () => {
                 </button>
                 <button
                   onClick={() => {
-                    setSortOrder("newest");
+                    setSortOrder("oldest");
                     setOpenModal(false);
                   }}
                   className="flex items-center justify-center w-[100%] cursor-pointer h-[40px] font-semibold hover:bg-gray-200 rounded-[12px] "

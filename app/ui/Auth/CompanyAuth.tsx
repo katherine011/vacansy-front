@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { setCookie } from "cookies-next";
+import { setCookie, getCookie } from "cookies-next";
 
 const schema = yup.object().shape({
   registrantName: yup.string().required("სახელი აუცილებელია"),
@@ -21,8 +21,6 @@ const schema = yup.object().shape({
   description: yup.string().required("კომპანიის შესახებ აუცილებელია"),
 });
 
-type FormValues = yup.InferType<typeof schema>;
-
 const CompanyAuth = () => {
   const router = useRouter();
 
@@ -30,30 +28,39 @@ const CompanyAuth = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>({ resolver: yupResolver(schema) });
+  } = useForm({ resolver: yupResolver(schema) });
 
-  const onSubmit = async (data: FormValues) => {
+  const onSubmit = async (data: any) => {
     try {
       const response = await axios.post(
         "http://localhost:3001/auth/register/company",
-        data
+        {
+          registrantName: data.registrantName,
+          registrantSurname: data.registrantSurname,
+          companyName: data.companyName,
+          description: data.description,
+          phone: data.phone,
+          email: data.email,
+          password: data.password,
+          profilePhoto: data.profilePhoto || undefined,
+          role: "company",
+        }
       );
 
       const token = response.data.token;
       if (token) {
         setCookie("token", token);
+        alert("თქვენ წარმატებით გაიარეთ რეგისტრაცია!");
         router.push("/");
       } else {
-        console.error("Token not returned from backend");
+        throw new Error("ტოკენი არ დაბრუნდა სერვერიდან");
       }
-    } catch (err: unknown) {
+    } catch (err: any) {
+      console.error("რეგისტრაცია ჩაიშალა:", err);
       if (axios.isAxiosError(err)) {
-        console.error(
-          "Registration failed:",
-          err.response?.data || err.message
-        );
+        alert(err.response?.data?.message || "სერვერის შეცდომა");
       } else {
-        console.error("Unexpected error:", err);
+        alert("უცნობი შეცდომა მოხდა");
       }
     }
   };
@@ -143,6 +150,13 @@ const CompanyAuth = () => {
           <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
         )}
       </div>
+      {/* <div className="w-full">
+        <input
+          type="password"
+          placeholder="გაიმეორეთ პაროლი"
+          {...register("confirmPassword")}
+        />
+      </div> */}
 
       {/* Phone */}
       <div className="w-full">

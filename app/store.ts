@@ -85,9 +85,10 @@ export const shift = [
 import { getCookie } from "cookies-next";
 
 export const getRoleFromToken = () => {
-  const token = getCookie("token");
+  const rawToken = getCookie("token");
+  const token = typeof rawToken === "string" ? rawToken : undefined;
 
-  if (!token) return "unauthenticated"; // დაცვა null-ისგან
+  if (!token) return "unauthenticated";
   try {
     const base64Url = token.split(".")[1];
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
